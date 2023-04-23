@@ -1,0 +1,12 @@
+export const FILO_PROTOTYPE = Symbol('prototype')
+export const FILO_NEW = Symbol('new')
+export const FILO_PARENT = Symbol('parent')
+export const FILO_CONSTITUENTS = Symbol('constituents')
+export const FILO_TYPE_ID = Symbol('typeId')
+export const FILO_CLASS = Symbol('class')
+export const FILO_HAS_CONSTRUCTOR = Symbol('hasConstructor')
+export const FILO_PROXY_TARGET = Symbol('proxy-target')
+const FILO_ACCESS_RECORD = Symbol('access-record')
+export const FILO_CALLING_LAYER_ID = Symbol('calling-layer-id')
+export const FILO_LAYERS = Symbol('layers')
+export const IS_DEV_MODE = process.env.NODE_ENV === 'dev'
