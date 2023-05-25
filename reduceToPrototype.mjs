@@ -112,6 +112,27 @@ export function reduceToPrototype(acc, _l) {
 
         /* Since this is a lens, we're done */
         continue
+      } else {
+        // cannot be an object
+        if (typeof _fn2 == 'object' && _fn2 != null) {
+          throw new Error('Lowercase keys must be a primitive or a function')
+        }
+        if (_fn2 && typeof _fn2 !== 'function') {
+          if (fn1 !== undefined) {
+            throw new Error('Declared defaults cannot change')
+          }
+
+          next[FILO_HAS_CONSTRUCTOR] = true
+          next.constructor = fn1 ? function (arg) {
+            fn1.call(this, arg)
+            this[k] = _fn2
+          } : function () {
+            this[k] = _fn2
+          }
+          // we don't need to change anything else
+          continue
+
+        }
       }
 
       /* Since it's not a lens, wrap the function if in DEV mode */
