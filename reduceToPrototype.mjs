@@ -72,7 +72,7 @@ export function reduceToPrototype(acc, _l) {
     const layerKeys = Object.keys(l)
     const fnKeys = Array.from(
         new Set([...Object.keys(acc), ...layerKeys]).keys()
-    )
+    ).sort((a,b) => a == 'constructor' ? -1 : (b == 'constructor' ? 1 : 0))
     for (const k of fnKeys) {
 
       const fn1 = acc[k]
@@ -117,18 +117,21 @@ export function reduceToPrototype(acc, _l) {
         if (typeof _fn2 == 'object' && _fn2 != null) {
           throw new Error('Lowercase keys must be a primitive or a function')
         }
-        if (_fn2 && typeof _fn2 !== 'function') {
-          if (fn1 !== undefined) {
+        if (_fn2 !== undefined && typeof _fn2 !== 'function') {
+          if (_fn2 !== undefined && fn1 !== undefined) {
             throw new Error('Declared defaults cannot change')
           }
 
           next[FILO_HAS_CONSTRUCTOR] = true
-          next.constructor = fn1 ? function (arg) {
-            fn1.call(this, arg)
+          const constructor = next.constructor
+          const setter = wrapFunctionForDev('constructor', function () {
             this[k] = _fn2
-          } : function () {
-            this[k] = _fn2
-          }
+          }, l)
+
+          next.constructor = constructor ? function (arg) {
+            constructor.call(this, arg)
+            setter.call(this)
+          } : setter
           // we don't need to change anything else
           continue
 
