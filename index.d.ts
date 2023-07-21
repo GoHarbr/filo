@@ -1,12 +1,16 @@
 declare module "types/filo";
 
-type MergeTypes<T extends unknown[]> =
+type MergeTypes<T extends unknown[], M extends object> =
     T extends [a: infer A, ...rest: infer R] ?
         ((
-            A extends (arg?: any) => infer K ? K : (
-                A extends object ? A : {}
+            A extends (arg?: any) => infer K ? K & M : (
+                A extends object ? A & M : M
                 )
-        ) & MergeTypes<R>) : {};
+        ) & MergeTypes<R, (
+            A extends (this: M, arg?: any) => infer K ? K & M : (
+                A extends object ? A & M : M
+                )
+            )>) : {};
 
 // type MergeTypes<T extends unknown[]> =
 //     T extends [a: Layer<infer A>, ...rest: infer R] ? (A & MergeTypes<R>) : {};
@@ -25,7 +29,7 @@ type Layer<Ks extends (object | FiloConstructor<any>)> = Ks extends object ? Def
 //         ))>
 // ) : []
 
-type FiloClass<LS extends Layer<any>[]> = MergeTypes<LS>
+type FiloClass<LS extends Layer<any>[]> = MergeTypes<LS, {}>
 type FiloConstructor<C extends FiloClass<any>> = (arg?: any) => C
 
 // export function filo<L2>(layer1, layer2: L2 extends {} ? {[k in keyof L2]: L2[k] extends (this: typeof layer1 extends (a?: any) => infer T ? T : typeof layer1, arg?: any) => infer L ? (arg: any) => L : L2[k]} : L2): FiloConstructor<FiloClass<[typeof layer1, typeof layer2]>>
