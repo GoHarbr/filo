@@ -125,7 +125,7 @@ export function reduceToPrototype(acc, _l) {
           next[FILO_HAS_CONSTRUCTOR] = true
           const constructor = next.constructor
           const setter = wrapFunctionForDev('constructor', function () {
-            if (!k in this) this[k] = _fn2
+            if (!(k in this)) this[k] = _fn2
           }, l)
 
           next.constructor = constructor ? function (arg) {
