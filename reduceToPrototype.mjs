@@ -54,12 +54,12 @@ export function reduceToPrototype(acc, _l) {
 
     // return _next
     l = recompiled
-  } else {
+  } //else {
     next[FILO_CONSTITUENTS] = [
       ...next[FILO_CONSTITUENTS],
       ...(l[FILO_CONSTITUENTS] || []),
     ]
-  }
+  //}
 
 
   // todo skip already added
