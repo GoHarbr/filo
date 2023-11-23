@@ -59,8 +59,13 @@ export function filo(...layers) {
           if (typeof key == 'string' && key.startsWith('_')) {
             throw new Error('Private keys cannot be accessed')
           }
-          return _this[key]
-        }
+          const v = _this[key]
+          if (v === undefined) {
+            if (key != 'then') {
+              throw new Error('Keys cannot be undefined: ' + key)
+            }
+          }
+          return v        }
       })
 
       const r = _this.constructor(a)
